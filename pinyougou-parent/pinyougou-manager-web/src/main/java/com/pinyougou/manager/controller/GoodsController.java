@@ -63,7 +63,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
+	public Result update(@RequestBody Goods goods){
 		try {
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
@@ -79,7 +79,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbGoods findOne(Long id){
+	public Goods findOne(Long id){
 		return goodsService.findOne(id);		
 	}
 	
@@ -101,7 +101,7 @@ public class GoodsController {
 	
 		/**
 	 * 查询+分页
-	 * @param brand
+	 * @param goods
 	 * @param page
 	 * @param rows
 	 * @return
@@ -109,6 +109,22 @@ public class GoodsController {
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
 		return goodsService.findPage(goods, page, rows);		
+	}
+
+	/**
+	 * 更新商品状态
+	 * @param ids 需要更新的商品ID
+	 * @param status 更新后的状态代码
+	 * @return 成功返回true,失败返回false
+	 */
+	@RequestMapping("/updateStatus")
+	public Result updateStatus(Long[] ids,String status){
+		try {
+			goodsService.updateStatus(ids,status);
+			return new Result(true,"审核商品成功");
+		}catch (Exception e){
+			return new Result(false,"审核商品出现错误");
+		}
 	}
 	
 }

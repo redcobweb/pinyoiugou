@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService){	
+app.controller('goodsController' ,function($scope,$controller,itemCatService   ,goodsService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -75,6 +75,36 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
 		);
+	};
+
+	/*设置变量存储商品状态,用于在前端调用,构建良好的用户体验*/
+	$scope.status=['未审核','已审核','审核未通过','已关闭'];
+
+	//商品分类列表
+	$scope.itemCatList=[];
+	/*查询商品分类列表*/
+	$scope.findItemCatList=function () {
+		itemCatService.findAll().success(
+			function (response) {
+				for (var i=0;i<response.length;i++){
+					$scope.itemCatList[response[i].id]=response[i].name;
+				}
+			}
+		)
+	};
+
+	/*更新状态*/
+	$scope.updateStatus=function (status) {
+		goodsService.updateStatus($scope.selectIds,status).success(
+			function (response) {
+				if (response.success){
+					$scope.reloadList();
+					$scope.selectIds=[];
+				}else {
+					alert(response.message);
+				}
+			}
+		)
 	}
     
 });	

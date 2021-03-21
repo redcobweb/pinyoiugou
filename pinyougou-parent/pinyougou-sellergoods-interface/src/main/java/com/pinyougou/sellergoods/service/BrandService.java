@@ -63,4 +63,6 @@ public interface BrandService {
      * @return 返回封装为map的品牌列表
      */
     public List<Map> selectOptionList();
+
+
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Security;
 import java.util.List;
 
 /**
@@ -69,8 +70,19 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
-		try {
+	public Result update(@RequestBody Goods goods){
+
+        /*获取当前商家的ID*/
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        /*根据商品ID从数据库中获取商品*/
+        Goods goods1 = goodsService.findOne(goods.getGoods().getId());
+
+        /*数据库中查出来的goods对象对应的商家ID,参数传过来的goods对象的商家ID和Security中获取的商家ID,三者必须都一样*/
+        if (!goods.getGoods().getSellerId().equals(name)||!goods1.getGoods().getSellerId().equals(name)){
+            return new Result(false, "非法操作");
+        }
+        try {
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
@@ -85,7 +97,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbGoods findOne(Long id){
+	public Goods findOne(Long id){
 		return goodsService.findOne(id);		
 	}
 	
@@ -107,13 +119,16 @@ public class GoodsController {
 	
 		/**
 	 * 查询+分页
-	 * @param brand
+	 * @param goods
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
+		/*获取商家ID*/
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		goods.setSellerId(sellerId);
 		return goodsService.findPage(goods, page, rows);		
 	}
 	

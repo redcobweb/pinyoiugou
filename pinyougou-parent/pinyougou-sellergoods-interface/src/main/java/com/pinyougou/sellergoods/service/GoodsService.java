@@ -34,7 +34,7 @@ public interface GoodsService {
 	/**
 	 * 修改
 	 */
-	public void update(TbGoods goods);
+	public void update(Goods goods);
 	
 
 	/**
@@ -42,7 +42,8 @@ public interface GoodsService {
 	 * @param id
 	 * @return
 	 */
-	public TbGoods findOne(Long id);
+	/*修改返回值,改为组合实体类Goods*/
+	public Goods findOne(Long id);
 	
 	
 	/**
@@ -58,5 +59,12 @@ public interface GoodsService {
 	 * @return
 	 */
 	public PageResult findPage(TbGoods goods, int pageNum, int pageSize);
+
+	/**
+	 * 批量修改商品审核状态
+	 * @param ids 商品ID集合
+	 * @param status 状态代码
+	 */
+	public void updateStatus(Long[] ids,String status);
 	
 }
